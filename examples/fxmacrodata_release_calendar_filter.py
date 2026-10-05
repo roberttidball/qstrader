@@ -29,7 +29,10 @@ def fetch_release_events(
     with urlopen(url, timeout=20) as response:
         payload = json.load(response)
 
-    return payload.get("data", [])
+    events = payload.get("data") if isinstance(payload, dict) else None
+    if not isinstance(events, list):
+        raise ValueError("FXMacroData returned an unexpected calendar response")
+    return events
 
 
 def build_blackout_dates(
